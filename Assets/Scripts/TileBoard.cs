@@ -2,33 +2,35 @@
 
 namespace DefaultNamespace
 {
-    public class GenerateTile
+    public class TileBoard
     {
         
         private Material _tileMaterial;
         private GameObject[,] _tiles;
         private MeshRenderer[,] _meshRenderers;
 
-        private float _yOffset;
         private Vector3 _bounds;
+        private float _yOffset;
+        private float _tileSize;
 
         public Vector3 Bounds => _bounds;
+        public float YOffset => _yOffset;
+        public float TileSize => _tileSize;
         public MeshRenderer[,] MeshRenderers => _meshRenderers;
         public GameObject[,] Tiles => _tiles;
-
-        public float YOffset => _yOffset;
         
-        public GenerateTile(Material tileMaterial, float yOffset)
+        public TileBoard(Material tileMaterial, float yOffset, float tileSize)
         {
             _tileMaterial = tileMaterial;
             _yOffset = yOffset;
+            _tileSize = tileSize;
         }
         
         
-        public void GenerateTiles(float tileSize, int tileCountX, int tileCountY, Transform parent)
+        public void GenerateAll(int tileCountX, int tileCountY, Transform parent)
         {
             _yOffset += parent.position.y;
-            _bounds = new Vector3((tileCountX / 2) * tileSize,0,(tileCountY / 2) * tileSize);
+            _bounds = new Vector3((tileCountX / 2) * _tileSize,0,(tileCountY / 2) * _tileSize);
         
             _tiles = new GameObject[tileCountX,tileCountY];
             _meshRenderers = new MeshRenderer[tileCountX,tileCountY];
@@ -36,13 +38,13 @@ namespace DefaultNamespace
             {
                 for (int y = 0; y < tileCountY; y++)
                 {
-                    _tiles[x, y] = GenerateSingleTile(tileSize, x, y,parent);
+                    _tiles[x, y] = GenerateSingle(_tileSize, x, y,parent);
                     _meshRenderers[x,y] = GenerateMeshRenderers(_tiles[x,y]);
                 }
             }
         }
 
-        private GameObject GenerateSingleTile(float tileSize, int x, int y,Transform parent)
+        private GameObject GenerateSingle(float tileSize, int x, int y,Transform parent)
         {
             GameObject tile = new GameObject($"X:{x},Y:{y}");
             tile.transform.SetParent(parent);
